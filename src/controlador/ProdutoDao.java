@@ -17,11 +17,12 @@ import modelo.Produto;
 public class ProdutoDao {
 
     public void inserir(Produto u) throws Exception {
-        String sql = "INSERT INTO produto (nome,unidadeDeMedida) values(?,?)";
+        String sql = "INSERT INTO produto (nome,unidadeDeMedida, valor) values(?,?,?)";
         Connection conexao = Conexao.getConexao();
         try (PreparedStatement ps = conexao.prepareStatement(sql)) {
             ps.setString(1, u.getNomeProduto());
             ps.setString(2, u.getUnidadeDeMedida());
+            ps.setDouble(3, u.getValor());
             ps.executeUpdate();
         } catch (Exception ex) {
             throw ex;
@@ -49,6 +50,7 @@ public class ProdutoDao {
                     u.setId(rs.getInt("id"));
                     u.setNomeProduto(rs.getString("nome"));
                     u.setUnidadeDeMedida(rs.getString("unidadeDeMedida"));
+                    u.setValor(rs.getDouble("valor"));
                     lista.add(u);
                 }
             }
@@ -98,14 +100,16 @@ public class ProdutoDao {
     public boolean atualizar(Produto p) throws Exception {
         String sql = "update produto"
                 + "      set nome   = ?,"
-                + "          unidadeDeMedida  = ?"
+                + "          unidadeDeMedida  = ?,"
+                + "          valor  = ?"
                 + "    where id     = ?";
 
         Connection conexao = Conexao.getConexao();
         try ( PreparedStatement ps = conexao.prepareStatement(sql)) {
             ps.setString(1, p.getNomeProduto());
             ps.setString(2, p.getUnidadeDeMedida());
-            ps.setInt(3, p.getId());
+            ps.setDouble(3, p.getValor());
+            ps.setInt(4, p.getId());
 
             return ps.executeUpdate() == 1;
         }

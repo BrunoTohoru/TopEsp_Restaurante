@@ -14,6 +14,7 @@ public class Produto {
     private String nomeProduto;
     private String unidadeDeMedida;
     private String dataCadastro;
+    private Double valor;
 
     public String getDataCadastro() {
         return dataCadastro;
@@ -45,6 +46,14 @@ public class Produto {
 
     public void setUnidadeDeMedida(String unidadeDeMedida) {
         this.unidadeDeMedida = unidadeDeMedida;
+    }
+
+    public Double getValor() {
+        return valor;
+    }
+
+    public void setValor(Double valor) {
+        this.valor = valor;
     }
 
 }
