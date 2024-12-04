@@ -53,6 +53,7 @@ CREATE TABLE `produto` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nome` varchar(100) NOT NULL,
   `unidadeDeMedida` varchar(15) NOT NULL,
+  `valor` DECIMAL(10,2) NOT NULL,	
   `datacadastro` datetime DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -85,4 +86,23 @@ CREATE TABLE `usuario_grupo` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nome` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `pedido` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `mesa` int NOT NULL,
+  `datacadastro` datetime NOT NULL DEFAULT current_timestamp(),
+  `status` int not null,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `itens_pedido` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id_pedido` int(11) NOT null,
+  `id_produto` int(11) NOT null,
+  `quantidade` int NOT NULL,
+  `valor` decimal(10,2) not null,
+  PRIMARY KEY (`id`),
+  FOREIGN key (`id_pedido`) references pedido(`id`),
+  FOREIGN key (`id_produto`) references produto(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

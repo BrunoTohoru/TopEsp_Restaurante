@@ -37,6 +37,8 @@ public class ProdutoCadastrar extends javax.swing.JFrame {
         jtfUnidadeMed = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        tfValor = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -64,6 +66,14 @@ public class ProdutoCadastrar extends javax.swing.JFrame {
             }
         });
 
+        jLabel4.setText("Valor");
+
+        tfValor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tfValorActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -82,7 +92,10 @@ public class ProdutoCadastrar extends javax.swing.JFrame {
                             .addComponent(jtfNomeProduto)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jtfUnidadeMed, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 323, Short.MAX_VALUE))))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(tfValor, javax.swing.GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE))))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButton2)
@@ -102,7 +115,9 @@ public class ProdutoCadastrar extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jtfUnidadeMed, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jtfUnidadeMed, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4)
+                    .addComponent(tfValor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
@@ -119,12 +134,14 @@ public class ProdutoCadastrar extends javax.swing.JFrame {
                 Produto prod = new Produto();
                 prod.setNomeProduto(jtfNomeProduto.getText());
                 prod.setUnidadeDeMedida(jtfUnidadeMed.getText());
+                prod.setValor(Double.parseDouble(tfValor.getText()));
                 try {
                     ProdutoDao produtoMethods = new ProdutoDao();
                     produtoMethods.inserir(prod);
                     JOptionPane.showMessageDialog(this, "Produto Cadastrado");
                     jtfNomeProduto.setText("");
                     jtfUnidadeMed.setText("");
+                    tfValor.setText("");
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(this, "Produto Falhou .\n" + ex.getMessage());
                 }
@@ -139,6 +156,10 @@ public class ProdutoCadastrar extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void tfValorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfValorActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tfValorActionPerformed
 
     /**
      * @param args the command line arguments
@@ -181,7 +202,9 @@ public class ProdutoCadastrar extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JTextField jtfNomeProduto;
     private javax.swing.JTextField jtfUnidadeMed;
+    private javax.swing.JTextField tfValor;
     // End of variables declaration//GEN-END:variables
 }

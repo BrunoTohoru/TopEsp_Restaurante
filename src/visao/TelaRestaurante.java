@@ -21,6 +21,7 @@ public class TelaRestaurante extends javax.swing.JFrame {
      */
     public TelaRestaurante() {
         initComponents();
+        atualizaTabelaProdutos();
     }
 
     /**
@@ -546,16 +547,42 @@ public class TelaRestaurante extends javax.swing.JFrame {
                 {null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "ID", "Nome", "UN", "Valor"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblProdutos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblProdutosMouseClicked(evt);
+            }
+        });
         spProdutos.setViewportView(tblProdutos);
+        if (tblProdutos.getColumnModel().getColumnCount() > 0) {
+            tblProdutos.getColumnModel().getColumn(0).setResizable(false);
+        }
 
         btnAdicionar.setText("Adicionar");
         btnAdicionar.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        btnAdicionar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAdicionarActionPerformed(evt);
+            }
+        });
 
         btnRemover.setText("Remover");
         btnRemover.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        btnRemover.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoverActionPerformed(evt);
+            }
+        });
 
         lblIconAddRem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/ciclo.png"))); // NOI18N
 
@@ -564,16 +591,31 @@ public class TelaRestaurante extends javax.swing.JFrame {
 
         tblItensP.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "ID", "Nome", "Quantidade", "Valor UN", "Total"
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         spItensP.setViewportView(tblItensP);
+        if (tblItensP.getColumnModel().getColumnCount() > 0) {
+            tblItensP.getColumnModel().getColumn(0).setResizable(false);
+        }
 
         btnSalvarPedido.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnSalvarPedido.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/salvar.png"))); // NOI18N
@@ -584,6 +626,7 @@ public class TelaRestaurante extends javax.swing.JFrame {
         lblValorTNovoP.setText("Valor Total");
 
         tfValorTNovoP.setEditable(false);
+        tfValorTNovoP.setText("0.00");
 
         javax.swing.GroupLayout pNovoPedidoLayout = new javax.swing.GroupLayout(pNovoPedido);
         pNovoPedido.setLayout(pNovoPedidoLayout);
@@ -698,6 +741,50 @@ public class TelaRestaurante extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void tblProdutosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblProdutosMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tblProdutosMouseClicked
+
+    private void btnAdicionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdicionarActionPerformed
+        int linhaSelecionada = tblProdutos.getSelectedRow();
+        if (linhaSelecionada != -1) {
+            int id = Integer.parseInt(tblProdutos.getModel().getValueAt(linhaSelecionada, 0).toString());
+            String nomeProduto = tblProdutos.getModel().getValueAt(linhaSelecionada, 1).toString();
+            double valorUn = Double.parseDouble(tblProdutos.getModel().getValueAt(linhaSelecionada, 3).toString());
+            int quantidade = Integer.parseInt(tfQuantidade.getText());
+            double valorTotal = quantidade * valorUn;
+            
+            DefaultTableModel modelo = (DefaultTableModel) tblItensP.getModel();
+            String[] linhadaTabela = {
+                    String.valueOf(id),
+                    nomeProduto,
+                    String.valueOf(quantidade),
+                    String.valueOf(valorUn),
+                    String.valueOf(valorTotal)
+                };
+            modelo.addRow(linhadaTabela);
+            
+            atualizaValorTotal(valorTotal);
+        }else{
+            JOptionPane.showMessageDialog(null, "Necessário selecionar um produto.");
+        }
+        
+    }//GEN-LAST:event_btnAdicionarActionPerformed
+
+    private void btnRemoverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoverActionPerformed
+        int linhaSelecionada = tblItensP.getSelectedRow();
+        if (linhaSelecionada != -1) {
+            DefaultTableModel modelo = (DefaultTableModel) tblItensP.getModel();
+            
+            double valor = Double.parseDouble(tblItensP.getModel().getValueAt(linhaSelecionada, 4).toString());
+            double valorTotal = valor * -1;
+            atualizaValorTotal(valorTotal);
+            modelo.removeRow(linhaSelecionada);
+        }else{
+            JOptionPane.showMessageDialog(null, "Necessário selecionar um registro.");
+        }
+    }//GEN-LAST:event_btnRemoverActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -757,6 +844,13 @@ public class TelaRestaurante extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Erro ao pesquisar: " + e.getMessage());
 
         }
+    }
+    
+    private void atualizaValorTotal(Double valor) {
+        Double valorTotal = Double.parseDouble(tfValorTNovoP.getText());
+        
+        Double total = valor + valorTotal;
+        tfValorTNovoP.setText(total.toString());
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

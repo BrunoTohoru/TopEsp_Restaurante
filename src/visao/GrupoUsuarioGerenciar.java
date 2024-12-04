@@ -91,6 +91,11 @@ public class GrupoUsuarioGerenciar extends javax.swing.JFrame {
 
         btnAlterar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/alterar.png"))); // NOI18N
         btnAlterar.setText("Alterar");
+        btnAlterar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAlterarActionPerformed(evt);
+            }
+        });
 
         jLabel2.setText("Pesquisar:");
 
@@ -220,6 +225,10 @@ public class GrupoUsuarioGerenciar extends javax.swing.JFrame {
             form.mostrarGrupoUsuario(id);
         }
     }//GEN-LAST:event_jtblGrupoUsuarioMouseClicked
+
+    private void btnAlterarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAlterarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnAlterarActionPerformed
 
     /**
      * @param args the command line arguments
