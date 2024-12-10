@@ -4,10 +4,16 @@
  */
 package visao;
 
+import controlador.PedidoDao;
 import controlador.ProdutoDao;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import modelo.ItensPedido;
+import modelo.Pedido;
 import modelo.Produto;
 
 /**
@@ -532,7 +538,7 @@ public class TelaRestaurante extends javax.swing.JFrame {
 
         lblMesa.setText("Mesa");
 
-        cbMesa.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Mesa 1" }));
+        cbMesa.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5", "6" }));
 
         lblQuantidade.setText("Quantidade");
 
@@ -621,6 +627,11 @@ public class TelaRestaurante extends javax.swing.JFrame {
         btnSalvarPedido.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/salvar.png"))); // NOI18N
         btnSalvarPedido.setText("Salvar Pedido");
         btnSalvarPedido.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        btnSalvarPedido.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSalvarPedidoActionPerformed(evt);
+            }
+        });
 
         lblValorTNovoP.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         lblValorTNovoP.setText("Valor Total");
@@ -784,6 +795,37 @@ public class TelaRestaurante extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Necessário selecionar um registro.");
         }
     }//GEN-LAST:event_btnRemoverActionPerformed
+
+    private void btnSalvarPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarPedidoActionPerformed
+        Pedido p = new Pedido();
+        p.setMesa(Integer.parseInt(cbMesa.getSelectedItem().toString()));
+        p.setStatus(1); //Aberta
+        
+        List<ItensPedido> itensPedido = null; 
+        TableModel tabela = tblItensP.getModel();
+        for (int linha = 0; linha < tabela.getRowCount(); linha++) {
+            Integer id = Integer.parseInt(tabela.getValueAt(linha, 0).toString());
+            Integer quantidade = Integer.parseInt(tabela.getValueAt(linha, 2).toString());
+            Double valor = Double.parseDouble(tabela.getValueAt(linha, 3).toString());
+            
+            Produto produto = new Produto();
+            produto.setId(id);
+            
+            ItensPedido ip = new ItensPedido();
+            ip.setProduto(produto);
+            ip.setQuantidade(quantidade);
+            ip.setValor(valor);
+            
+            itensPedido.add(ip);
+        }
+        p.setItens(itensPedido);
+        PedidoDao dao = new PedidoDao();
+        try {
+            dao.inserir(p);
+        } catch (Exception ex) {
+            ex.getMessage();
+        }
+    }//GEN-LAST:event_btnSalvarPedidoActionPerformed
 
     /**
      * @param args the command line arguments
