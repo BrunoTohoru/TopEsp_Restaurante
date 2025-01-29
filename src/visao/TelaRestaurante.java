@@ -28,6 +28,7 @@ public class TelaRestaurante extends javax.swing.JFrame {
     public TelaRestaurante() {
         initComponents();
         atualizaTabelaProdutos();
+        
     }
 
     /**
@@ -102,7 +103,7 @@ public class TelaRestaurante extends javax.swing.JFrame {
         lblValorTNovoP = new javax.swing.JLabel();
         tfValorTNovoP = new javax.swing.JTextField();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         pPrincipal.setBackground(new java.awt.Color(102, 102, 102));
 
@@ -542,6 +543,13 @@ public class TelaRestaurante extends javax.swing.JFrame {
 
         lblQuantidade.setText("Quantidade");
 
+        tfQuantidade.setText("1");
+        tfQuantidade.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tfQuantidadeActionPerformed(evt);
+            }
+        });
+
         lblProdutos.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         lblProdutos.setText("Produtos");
 
@@ -750,6 +758,7 @@ public class TelaRestaurante extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void tblProdutosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblProdutosMouseClicked
@@ -826,6 +835,10 @@ public class TelaRestaurante extends javax.swing.JFrame {
             ex.getMessage();
         }
     }//GEN-LAST:event_btnSalvarPedidoActionPerformed
+
+    private void tfQuantidadeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfQuantidadeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tfQuantidadeActionPerformed
 
     /**
      * @param args the command line arguments
