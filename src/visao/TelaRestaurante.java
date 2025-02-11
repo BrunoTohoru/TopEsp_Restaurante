@@ -28,7 +28,7 @@ public class TelaRestaurante extends javax.swing.JFrame {
     public TelaRestaurante() {
         initComponents();
         atualizaTabelaProdutos();
-        
+
     }
 
     /**
@@ -773,34 +773,34 @@ public class TelaRestaurante extends javax.swing.JFrame {
             double valorUn = Double.parseDouble(tblProdutos.getModel().getValueAt(linhaSelecionada, 3).toString());
             int quantidade = Integer.parseInt(tfQuantidade.getText());
             double valorTotal = quantidade * valorUn;
-            
+
             DefaultTableModel modelo = (DefaultTableModel) tblItensP.getModel();
             String[] linhadaTabela = {
-                    String.valueOf(id),
-                    nomeProduto,
-                    String.valueOf(quantidade),
-                    String.valueOf(valorUn),
-                    String.valueOf(valorTotal)
-                };
+                String.valueOf(id),
+                nomeProduto,
+                String.valueOf(quantidade),
+                String.valueOf(valorUn),
+                String.valueOf(valorTotal)
+            };
             modelo.addRow(linhadaTabela);
-            
+
             atualizaValorTotal(valorTotal);
-        }else{
+        } else {
             JOptionPane.showMessageDialog(null, "Necessário selecionar um produto.");
         }
-        
+
     }//GEN-LAST:event_btnAdicionarActionPerformed
 
     private void btnRemoverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoverActionPerformed
         int linhaSelecionada = tblItensP.getSelectedRow();
         if (linhaSelecionada != -1) {
             DefaultTableModel modelo = (DefaultTableModel) tblItensP.getModel();
-            
+
             double valor = Double.parseDouble(tblItensP.getModel().getValueAt(linhaSelecionada, 4).toString());
             double valorTotal = valor * -1;
             atualizaValorTotal(valorTotal);
             modelo.removeRow(linhaSelecionada);
-        }else{
+        } else {
             JOptionPane.showMessageDialog(null, "Necessário selecionar um registro.");
         }
     }//GEN-LAST:event_btnRemoverActionPerformed
@@ -809,32 +809,37 @@ public class TelaRestaurante extends javax.swing.JFrame {
         Pedido p = new Pedido();
         p.setMesa(Integer.parseInt(cbMesa.getSelectedItem().toString()));
         p.setStatus(1); //Aberta
-        
-        List<ItensPedido> itensPedido = null; 
+
         TableModel tabela = tblItensP.getModel();
         for (int linha = 0; linha < tabela.getRowCount(); linha++) {
             Integer id = Integer.parseInt(tabela.getValueAt(linha, 0).toString());
             Integer quantidade = Integer.parseInt(tabela.getValueAt(linha, 2).toString());
-            Double valor = Double.parseDouble(tabela.getValueAt(linha, 3).toString());
-            
+            Double valor = Double.parseDouble(tabela.getValueAt(linha, 3).toString().replaceAll(",", "."));
+
             Produto produto = new Produto();
             produto.setId(id);
-            
+
             ItensPedido ip = new ItensPedido();
             ip.setProduto(produto);
             ip.setQuantidade(quantidade);
             ip.setValor(valor);
-            
-            itensPedido.add(ip);
+
+            p.addItemPedido(ip);
         }
-        p.setItens(itensPedido);
+
         PedidoDao dao = new PedidoDao();
         try {
             dao.inserir(p);
+            limparTabelaItensPedido();
         } catch (Exception ex) {
             ex.getMessage();
         }
     }//GEN-LAST:event_btnSalvarPedidoActionPerformed
+
+    private void limparTabelaItensPedido() {
+        ((DefaultTableModel) tblItensP.getModel()).setRowCount(0);
+        tfValorTNovoP.setText("0.00");
+    }
 
     private void tfQuantidadeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfQuantidadeActionPerformed
         // TODO add your handling code here:
@@ -874,8 +879,8 @@ public class TelaRestaurante extends javax.swing.JFrame {
             }
         });
     }
-    
-    private void atualizaTabelaProdutos(){
+
+    private void atualizaTabelaProdutos() {
         DefaultTableModel modelo = (DefaultTableModel) tblProdutos.getModel();
         modelo.setNumRows(0); // limpa os campos
 
@@ -900,10 +905,10 @@ public class TelaRestaurante extends javax.swing.JFrame {
 
         }
     }
-    
+
     private void atualizaValorTotal(Double valor) {
         Double valorTotal = Double.parseDouble(tfValorTNovoP.getText());
-        
+
         Double total = valor + valorTotal;
         tfValorTNovoP.setText(total.toString());
     }

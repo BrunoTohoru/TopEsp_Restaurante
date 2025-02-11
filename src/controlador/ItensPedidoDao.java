@@ -9,12 +9,13 @@ import java.util.List;
 public class ItensPedidoDao {
 
     public void inserir(ItensPedido ip) throws Exception {
-        String sql = "INSERT INTO itens_pedido (quantidade, valor, produto) values(?,?,?)";
+        String sql = "INSERT INTO itens_pedido (quantidade, valor, id_produto, id_pedido) values(?,?,?,?)";
         Connection conexao = Conexao.getConexao();
         try ( PreparedStatement ps = conexao.prepareStatement(sql)) {
             ps.setInt(1, ip.getQuantidade());
             ps.setDouble(2, ip.getValor());
             ps.setInt(3, ip.getProduto().getId());
+            ps.setInt(4, ip.getPedido().getId());
             ps.executeUpdate();
         } catch (Exception ex) {
             throw ex;
@@ -82,7 +83,7 @@ public class ItensPedidoDao {
         return obj;
     }
 
-    public boolean atualizar(ItensPedido p) throws Exception {
+    /*public boolean atualizar(ItensPedido p) throws Exception {
         String sql = "update pedido"
                 + "      set mesa = ?,"
                 + "          status = ?"
@@ -96,5 +97,5 @@ public class ItensPedidoDao {
 
             return ps.executeUpdate() == 1;
         }
-    }
+    }*/
 }

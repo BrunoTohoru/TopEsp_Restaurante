@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
+import modelo.ItensPedido;
 import modelo.Pedido;
 
 /**
@@ -16,16 +17,24 @@ import modelo.Pedido;
  */
 public class PedidoDao {
 
-    public void inserir(Pedido u) throws Exception {
+    public void inserir(Pedido p) throws Exception {
         String sql = "INSERT INTO pedido (mesa, status) values(?,?)";
         Connection conexao = Conexao.getConexao();
         try ( PreparedStatement ps = conexao.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
-            ps.setInt(1, u.getMesa());
-            ps.setInt(2, u.getStatus());
+            ps.setInt(1, p.getMesa());
+            ps.setInt(2, p.getStatus());
+            
             ps.executeUpdate();
             
+            java.sql.ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                p.setId(rs.getInt(1));
+            }
             
-            
+            for (ItensPedido itemPedido : p.getItens()) {
+                itemPedido.setPedido(p);
+                new ItensPedidoDao().inserir(itemPedido);
+            }
             
         } catch (Exception ex) {
             throw ex;

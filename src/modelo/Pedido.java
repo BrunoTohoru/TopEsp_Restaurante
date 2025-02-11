@@ -1,12 +1,13 @@
 package modelo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Pedido {
     private Integer id;
     private Integer mesa;
     private Integer status;
-    private List<ItensPedido> itens;
+    private List<ItensPedido> itens = new ArrayList<>();
     
     public Integer getId() {
         return id;
@@ -38,6 +39,10 @@ public class Pedido {
 
     public void setItens(List<ItensPedido> itens) {
         this.itens = itens;
+    }
+    
+    public void addItemPedido(ItensPedido ip){
+        this.itens.add(ip);
     }
 
 }

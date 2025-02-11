@@ -5,6 +5,7 @@ public class ItensPedido {
     private Integer quantidade;
     private Double valor;
     private Produto produto;
+    private Pedido pedido;
 
     public Integer getId() {
         return id;
@@ -36,6 +37,14 @@ public class ItensPedido {
 
     public void setProduto(Produto produto) {
         this.produto = produto;
+    }
+
+    public Pedido getPedido() {
+        return pedido;
+    }
+
+    public void setPedido(Pedido pedido) {
+        this.pedido = pedido;
     }
 
 }
