@@ -4,6 +4,7 @@
  */
 package visao;
 
+import controlador.ItensPedidoDao;
 import controlador.PedidoDao;
 import controlador.ProdutoDao;
 import java.util.List;
@@ -28,7 +29,7 @@ public class TelaRestaurante extends javax.swing.JFrame {
     public TelaRestaurante() {
         initComponents();
         atualizaTabelaProdutos();
-
+        atualizaTabelaPedidoMesa();
     }
 
     /**
@@ -102,6 +103,7 @@ public class TelaRestaurante extends javax.swing.JFrame {
         btnSalvarPedido = new javax.swing.JButton();
         lblValorTNovoP = new javax.swing.JLabel();
         tfValorTNovoP = new javax.swing.JTextField();
+        btnTelaProduto = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -110,6 +112,11 @@ public class TelaRestaurante extends javax.swing.JFrame {
         pCabecalho.setBackground(new java.awt.Color(255, 204, 204));
 
         btnSair.setText("Exit");
+        btnSair.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSairActionPerformed(evt);
+            }
+        });
 
         lblIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/restaurante.png"))); // NOI18N
 
@@ -308,12 +315,17 @@ public class TelaRestaurante extends javax.swing.JFrame {
 
         pMesa1.setBackground(new java.awt.Color(255, 153, 153));
         pMesa1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        pMesa1.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                pMesa1FocusGained(evt);
+            }
+        });
 
         lblMesa1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         lblMesa1.setText("MESA 1");
 
         lblValorT1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        lblValorT1.setText("R$ 150,00");
+        lblValorT1.setText("R$ 0");
 
         lblItensP1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/pedido.png"))); // NOI18N
 
@@ -437,13 +449,26 @@ public class TelaRestaurante extends javax.swing.JFrame {
                 {null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Produto", "Qtd", "Valor Unit.", "Total"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, true, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         spPedidosMesa.setViewportView(tblPedidos);
 
         tfValorT.setEditable(false);
         tfValorT.setText("0,00");
+        tfValorT.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tfValorTActionPerformed(evt);
+            }
+        });
 
         lblValorT.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         lblValorT.setText("Valor Total");
@@ -471,7 +496,7 @@ public class TelaRestaurante extends javax.swing.JFrame {
                         .addComponent(lblEditar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lblRemover)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 63, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 94, Short.MAX_VALUE)
                         .addComponent(lblValorT)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(tfValorT, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -646,6 +671,18 @@ public class TelaRestaurante extends javax.swing.JFrame {
 
         tfValorTNovoP.setEditable(false);
         tfValorTNovoP.setText("0.00");
+        tfValorTNovoP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tfValorTNovoPActionPerformed(evt);
+            }
+        });
+
+        btnTelaProduto.setText("...");
+        btnTelaProduto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTelaProdutoActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout pNovoPedidoLayout = new javax.swing.GroupLayout(pNovoPedido);
         pNovoPedido.setLayout(pNovoPedidoLayout);
@@ -662,7 +699,10 @@ public class TelaRestaurante extends javax.swing.JFrame {
                         .addGroup(pNovoPedidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(cbMesa, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(tfQuantidade)))
-                    .addComponent(lblProdutos)
+                    .addGroup(pNovoPedidoLayout.createSequentialGroup()
+                        .addComponent(lblProdutos)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnTelaProduto))
                     .addGroup(pNovoPedidoLayout.createSequentialGroup()
                         .addComponent(spProdutos, javax.swing.GroupLayout.PREFERRED_SIZE, 278, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -701,7 +741,9 @@ public class TelaRestaurante extends javax.swing.JFrame {
                             .addComponent(lblQuantidade)
                             .addComponent(tfQuantidade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblProdutos)
+                        .addGroup(pNovoPedidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblProdutos)
+                            .addComponent(btnTelaProduto))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(pNovoPedidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(spProdutos, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
@@ -712,7 +754,7 @@ public class TelaRestaurante extends javax.swing.JFrame {
                                 .addComponent(lblIconAddRem)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btnRemover)
-                                .addGap(0, 137, Short.MAX_VALUE))))
+                                .addGap(0, 135, Short.MAX_VALUE))))
                     .addGroup(pNovoPedidoLayout.createSequentialGroup()
                         .addComponent(spItensP, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -806,34 +848,40 @@ public class TelaRestaurante extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRemoverActionPerformed
 
     private void btnSalvarPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarPedidoActionPerformed
-        Pedido p = new Pedido();
-        p.setMesa(Integer.parseInt(cbMesa.getSelectedItem().toString()));
-        p.setStatus(1); //Aberta
+        
+        if(tblItensP.getRowCount() == 0){
+            JOptionPane.showMessageDialog(null, "Para gerar um Pedido novo deve ser adicionado itens ao pedido.");
+        }else{
+            Pedido p = new Pedido();
+            p.setMesa(Integer.parseInt(cbMesa.getSelectedItem().toString()));
+            p.setStatus(1); //Aberta
+            TableModel tabela = tblItensP.getModel();
+            for (int linha = 0; linha < tabela.getRowCount(); linha++) {
+                Integer id = Integer.parseInt(tabela.getValueAt(linha, 0).toString());
+                Integer quantidade = Integer.parseInt(tabela.getValueAt(linha, 2).toString());
+                Double valor = Double.parseDouble(tabela.getValueAt(linha, 3).toString().replaceAll(",", "."));
 
-        TableModel tabela = tblItensP.getModel();
-        for (int linha = 0; linha < tabela.getRowCount(); linha++) {
-            Integer id = Integer.parseInt(tabela.getValueAt(linha, 0).toString());
-            Integer quantidade = Integer.parseInt(tabela.getValueAt(linha, 2).toString());
-            Double valor = Double.parseDouble(tabela.getValueAt(linha, 3).toString().replaceAll(",", "."));
+                Produto produto = new Produto();
+                produto.setId(id);
 
-            Produto produto = new Produto();
-            produto.setId(id);
+                ItensPedido ip = new ItensPedido();
+                ip.setProduto(produto);
+                ip.setQuantidade(quantidade);
+                ip.setValor(valor);
 
-            ItensPedido ip = new ItensPedido();
-            ip.setProduto(produto);
-            ip.setQuantidade(quantidade);
-            ip.setValor(valor);
+                p.addItemPedido(ip);
+                JOptionPane.showMessageDialog(null, "Pedido Feito.");
+            }
 
-            p.addItemPedido(ip);
+            PedidoDao dao = new PedidoDao();
+            try {
+                dao.inserir(p);
+                limparTabelaItensPedido();
+            } catch (Exception ex) {
+                ex.getMessage();
+            }
         }
 
-        PedidoDao dao = new PedidoDao();
-        try {
-            dao.inserir(p);
-            limparTabelaItensPedido();
-        } catch (Exception ex) {
-            ex.getMessage();
-        }
     }//GEN-LAST:event_btnSalvarPedidoActionPerformed
 
     private void limparTabelaItensPedido() {
@@ -845,6 +893,63 @@ public class TelaRestaurante extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_tfQuantidadeActionPerformed
 
+    private void btnTelaProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTelaProdutoActionPerformed
+        new ProdutoGerenciar().setVisible(true);
+    }//GEN-LAST:event_btnTelaProdutoActionPerformed
+
+    private void btnSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSairActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_btnSairActionPerformed
+
+    private void pMesa1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_pMesa1FocusGained
+        PedidoDao daoPed = new PedidoDao();
+        daoPed.alterarStatus(WIDTH, WIDTH)
+        try {
+            List<Pedido> pedidosMesaAtivo = daoPed.buscarPedidoPorMesa(1);
+        } catch (Exception ex) {
+            Logger.getLogger(TelaRestaurante.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        ;
+        atualizaTabelaPedidoMesa()
+    }//GEN-LAST:event_pMesa1FocusGained
+
+    private void tfValorTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfValorTActionPerformed
+        
+    }//GEN-LAST:event_tfValorTActionPerformed
+
+    private void tfValorTNovoPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfValorTNovoPActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tfValorTNovoPActionPerformed
+    
+    private void atualizaTabelaPedidoMesa(Integer pedidoId){
+        DefaultTableModel modelo = (DefaultTableModel) tblPedidos.getModel();
+        modelo.setNumRows(0); // limpa os campos
+
+        try {
+            ItensPedidoDao daoIP = new ItensPedidoDao();
+            ProdutoDao daoP = new ProdutoDao();
+            
+            List<ItensPedido> lista = daoIP.buscar(pedidoId);
+            for (ItensPedido produtoDaMesa : lista) {
+                int qtd = produtoDaMesa.getQuantidade();
+                double valorU = daoP.getProduto(produtoDaMesa.getProduto().getId()).getValor();
+                String[] linhadaTabela = {
+                    String.valueOf(produtoDaMesa.getProduto().getNomeProduto()),
+                    String.valueOf(qtd),
+                    String.valueOf(valorU),
+                    String.valueOf(qtd * valorU)
+                };
+                modelo.addRow(linhadaTabela); // adiciona uma linha na tabela
+
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Erro ao pesquisar: " + e.getMessage());
+
+        }
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -918,6 +1023,7 @@ public class TelaRestaurante extends javax.swing.JFrame {
     private javax.swing.JButton btnRemover;
     private javax.swing.JButton btnSair;
     private javax.swing.JButton btnSalvarPedido;
+    private javax.swing.JButton btnTelaProduto;
     private javax.swing.JComboBox<String> cbMesa;
     private javax.swing.JLabel lblAdicionar;
     private javax.swing.JLabel lblData;

@@ -6,6 +6,7 @@ package controlador;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import modelo.ItensPedido;
@@ -113,5 +114,39 @@ public class PedidoDao {
 
             return ps.executeUpdate() == 1;
         }
+    }
+    
+    public void alterarStatus(Integer mesa, Integer status) throws Exception{
+        String sql = "update pedido"
+                + "      set status = ?"
+                + "    where mesa = ?";
+        Connection conexao = Conexao.getConexao();
+        try ( PreparedStatement ps = conexao.prepareStatement(sql)) {
+            ps.setInt(1, status);
+            ps.setInt(2, mesa);
+
+            ps.executeUpdate();
+        }
+    }
+    
+    public List<Pedido> buscarPedidoPorMesa(Integer mesa) throws SQLException, Exception{
+        List<Pedido> lista = new ArrayList<>();
+
+        String sql = "select * from pedido where mesa = ? and status = 1";
+
+        Connection conexao = Conexao.getConexao();
+        PreparedStatement ps = conexao.prepareStatement(sql);
+
+        try ( java.sql.ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                Pedido p = new Pedido();
+                p.setId(rs.getInt("id"));
+                p.setMesa(rs.getInt("mesa"));
+                p.setStatus(rs.getInt("status"));
+                lista.add(p);
+            }
+        }
+
+        return lista;
     }
 }

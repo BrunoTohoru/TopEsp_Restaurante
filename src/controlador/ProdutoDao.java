@@ -88,6 +88,7 @@ public class ProdutoDao {
                     obj.setId(rs.getInt("id"));
                     obj.setNomeProduto(rs.getString("nome"));
                     obj.setUnidadeDeMedida(rs.getString("unidadeDeMedida"));
+                    obj.setValor(rs.getDouble("valor"));
                 }
             }
         } catch (Exception e) {

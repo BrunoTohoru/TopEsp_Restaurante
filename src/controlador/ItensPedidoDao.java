@@ -23,21 +23,21 @@ public class ItensPedidoDao {
 
     }
 
-    public List<ItensPedido> buscar() throws Exception {
+    public List<ItensPedido> buscar(Integer id_pedido) throws Exception {
         List<ItensPedido> lista = new ArrayList<>();
 
-        String sql = "select * from itens_pedido";
+        String sql = "select * from itens_pedido where id_pedido = ?";
 
         Connection conexao = Conexao.getConexao();
         PreparedStatement ps = conexao.prepareStatement(sql);
-
+        ps.setInt(1, id_pedido);
         try ( java.sql.ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 ProdutoDao dao = new ProdutoDao();
                 ItensPedido ip = new ItensPedido();
                 ip.setId(rs.getInt("id"));
                 ip.setQuantidade(rs.getInt("quantidade"));
-                ip.setProduto(dao.getProduto(rs.getInt("produto")));
+                ip.setProduto(dao.getProduto(rs.getInt("id_produto")));
                 lista.add(ip);
             }
         }
