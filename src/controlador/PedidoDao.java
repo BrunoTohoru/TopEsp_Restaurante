@@ -133,10 +133,10 @@ public class PedidoDao {
         List<Pedido> lista = new ArrayList<>();
 
         String sql = "select * from pedido where mesa = ? and status = 1";
-
+        
         Connection conexao = Conexao.getConexao();
         PreparedStatement ps = conexao.prepareStatement(sql);
-
+        ps.setInt(1, mesa);
         try ( java.sql.ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 Pedido p = new Pedido();

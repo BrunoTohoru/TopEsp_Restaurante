@@ -7,10 +7,12 @@ package visao;
 import controlador.ItensPedidoDao;
 import controlador.PedidoDao;
 import controlador.ProdutoDao;
+import java.awt.Color;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import modelo.ItensPedido;
@@ -23,13 +25,15 @@ import modelo.Produto;
  */
 public class TelaRestaurante extends javax.swing.JFrame {
 
+    private int mesaDestaque;
     /**
      * Creates new form TelaRestaurante
      */
     public TelaRestaurante() {
         initComponents();
         atualizaTabelaProdutos();
-        atualizaTabelaPedidoMesa();
+        adicionarListenersMesas(); // Adiciona os listeners para as mesas
+        configurarBotoes(); // Configura os botões de cupom fiscal e finalizar mesa
     }
 
     /**
@@ -83,9 +87,8 @@ public class TelaRestaurante extends javax.swing.JFrame {
         tblPedidos = new javax.swing.JTable();
         tfValorT = new javax.swing.JTextField();
         lblValorT = new javax.swing.JLabel();
-        lblAdicionar = new javax.swing.JLabel();
-        lblEditar = new javax.swing.JLabel();
-        lblRemover = new javax.swing.JLabel();
+        btnEmitirCupom = new javax.swing.JButton();
+        btnFinalizarMesa = new javax.swing.JButton();
         pNovoPedido = new javax.swing.JPanel();
         lblMesa = new javax.swing.JLabel();
         cbMesa = new javax.swing.JComboBox<>();
@@ -193,8 +196,13 @@ public class TelaRestaurante extends javax.swing.JFrame {
         );
 
         tabbedPanel.setBorder(javax.swing.BorderFactory.createCompoundBorder());
+        tabbedPanel.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                tabbedPanelStateChanged(evt);
+            }
+        });
 
-        pMesa4.setBackground(new java.awt.Color(153, 255, 153));
+        pMesa4.setBackground(new java.awt.Color(0, 255, 0));
         pMesa4.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         pMesa4.setPreferredSize(new java.awt.Dimension(200, 110));
 
@@ -234,7 +242,7 @@ public class TelaRestaurante extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        pMesa3.setBackground(new java.awt.Color(153, 255, 153));
+        pMesa3.setBackground(new java.awt.Color(0, 255, 0));
         pMesa3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         lblMesa3.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -273,7 +281,7 @@ public class TelaRestaurante extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        pMesa2.setBackground(new java.awt.Color(153, 255, 153));
+        pMesa2.setBackground(new java.awt.Color(0, 255, 0));
         pMesa2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         pMesa2.setPreferredSize(new java.awt.Dimension(200, 110));
 
@@ -313,7 +321,7 @@ public class TelaRestaurante extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        pMesa1.setBackground(new java.awt.Color(255, 153, 153));
+        pMesa1.setBackground(new java.awt.Color(0, 255, 0));
         pMesa1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         pMesa1.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -325,7 +333,7 @@ public class TelaRestaurante extends javax.swing.JFrame {
         lblMesa1.setText("MESA 1");
 
         lblValorT1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        lblValorT1.setText("R$ 0");
+        lblValorT1.setText("R$ 0,00");
 
         lblItensP1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/pedido.png"))); // NOI18N
 
@@ -357,7 +365,7 @@ public class TelaRestaurante extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        pMesa6.setBackground(new java.awt.Color(255, 153, 153));
+        pMesa6.setBackground(new java.awt.Color(0, 255, 0));
         pMesa6.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         pMesa6.setPreferredSize(new java.awt.Dimension(200, 110));
 
@@ -365,7 +373,7 @@ public class TelaRestaurante extends javax.swing.JFrame {
         lblMesa6.setText("MESA 6");
 
         lblValorT6.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        lblValorT6.setText("R$ 150,00");
+        lblValorT6.setText("R$ 0,00");
 
         lblItensP6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/pedido.png"))); // NOI18N
 
@@ -381,7 +389,7 @@ public class TelaRestaurante extends javax.swing.JFrame {
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(pMesa6Layout.createSequentialGroup()
                         .addComponent(lblItensP6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 96, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 110, Short.MAX_VALUE)
                         .addComponent(lblValorT6)))
                 .addContainerGap())
         );
@@ -397,7 +405,7 @@ public class TelaRestaurante extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        pMesa5.setBackground(new java.awt.Color(153, 255, 153));
+        pMesa5.setBackground(new java.awt.Color(0, 255, 0));
         pMesa5.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         lblMesa5.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -473,11 +481,19 @@ public class TelaRestaurante extends javax.swing.JFrame {
         lblValorT.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         lblValorT.setText("Valor Total");
 
-        lblAdicionar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/add.png"))); // NOI18N
+        btnEmitirCupom.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/alterar.png"))); // NOI18N
+        btnEmitirCupom.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEmitirCupomActionPerformed(evt);
+            }
+        });
 
-        lblEditar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/alterar.png"))); // NOI18N
-
-        lblRemover.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/excluir.png"))); // NOI18N
+        btnFinalizarMesa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/salvar.png"))); // NOI18N
+        btnFinalizarMesa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFinalizarMesaActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout pPedidosMesaLayout = new javax.swing.GroupLayout(pPedidosMesa);
         pPedidosMesa.setLayout(pPedidosMesaLayout);
@@ -486,17 +502,15 @@ public class TelaRestaurante extends javax.swing.JFrame {
             .addGroup(pPedidosMesaLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pPedidosMesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(spPedidosMesa, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(spPedidosMesa, javax.swing.GroupLayout.DEFAULT_SIZE, 381, Short.MAX_VALUE)
                     .addGroup(pPedidosMesaLayout.createSequentialGroup()
                         .addComponent(lblPedidosMesa)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pPedidosMesaLayout.createSequentialGroup()
-                        .addComponent(lblAdicionar)
+                        .addComponent(btnEmitirCupom)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblEditar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblRemover)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 94, Short.MAX_VALUE)
+                        .addComponent(btnFinalizarMesa)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(lblValorT)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(tfValorT, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -510,12 +524,13 @@ public class TelaRestaurante extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(spPedidosMesa, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pPedidosMesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(lblEditar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lblAdicionar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lblRemover, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(tfValorT)
-                    .addComponent(lblValorT, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(pPedidosMesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(pPedidosMesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(tfValorT)
+                        .addGroup(pPedidosMesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblValorT)
+                            .addComponent(btnEmitirCupom)))
+                    .addComponent(btnFinalizarMesa))
                 .addGap(16, 16, 16))
         );
 
@@ -754,7 +769,7 @@ public class TelaRestaurante extends javax.swing.JFrame {
                                 .addComponent(lblIconAddRem)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btnRemover)
-                                .addGap(0, 135, Short.MAX_VALUE))))
+                                .addGap(0, 142, Short.MAX_VALUE))))
                     .addGroup(pNovoPedidoLayout.createSequentialGroup()
                         .addComponent(spItensP, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -848,10 +863,10 @@ public class TelaRestaurante extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRemoverActionPerformed
 
     private void btnSalvarPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarPedidoActionPerformed
-        
-        if(tblItensP.getRowCount() == 0){
+
+        if (tblItensP.getRowCount() == 0) {
             JOptionPane.showMessageDialog(null, "Para gerar um Pedido novo deve ser adicionado itens ao pedido.");
-        }else{
+        } else {
             Pedido p = new Pedido();
             p.setMesa(Integer.parseInt(cbMesa.getSelectedItem().toString()));
             p.setStatus(1); //Aberta
@@ -888,7 +903,12 @@ public class TelaRestaurante extends javax.swing.JFrame {
         ((DefaultTableModel) tblItensP.getModel()).setRowCount(0);
         tfValorTNovoP.setText("0.00");
     }
-
+    
+    private void limparTabelaMesaPedido() {
+        ((DefaultTableModel) tblPedidos.getModel()).setRowCount(0);
+        tfValorT.setText("0.00");
+    }
+    
     private void tfQuantidadeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfQuantidadeActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_tfQuantidadeActionPerformed
@@ -902,54 +922,55 @@ public class TelaRestaurante extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSairActionPerformed
 
     private void pMesa1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_pMesa1FocusGained
-        PedidoDao daoPed = new PedidoDao();
-        daoPed.alterarStatus(WIDTH, WIDTH)
-        try {
-            List<Pedido> pedidosMesaAtivo = daoPed.buscarPedidoPorMesa(1);
-        } catch (Exception ex) {
-            Logger.getLogger(TelaRestaurante.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        ;
-        atualizaTabelaPedidoMesa()
+
     }//GEN-LAST:event_pMesa1FocusGained
 
     private void tfValorTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfValorTActionPerformed
-        
+
     }//GEN-LAST:event_tfValorTActionPerformed
 
     private void tfValorTNovoPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfValorTNovoPActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_tfValorTNovoPActionPerformed
-    
-    private void atualizaTabelaPedidoMesa(Integer pedidoId){
-        DefaultTableModel modelo = (DefaultTableModel) tblPedidos.getModel();
-        modelo.setNumRows(0); // limpa os campos
 
+    private void btnEmitirCupomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEmitirCupomActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnEmitirCupomActionPerformed
+
+    private void btnFinalizarMesaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFinalizarMesaActionPerformed
+        int numeroMesa = mesaDestaque;
         try {
-            ItensPedidoDao daoIP = new ItensPedidoDao();
-            ProdutoDao daoP = new ProdutoDao();
-            
-            List<ItensPedido> lista = daoIP.buscar(pedidoId);
-            for (ItensPedido produtoDaMesa : lista) {
-                int qtd = produtoDaMesa.getQuantidade();
-                double valorU = daoP.getProduto(produtoDaMesa.getProduto().getId()).getValor();
-                String[] linhadaTabela = {
-                    String.valueOf(produtoDaMesa.getProduto().getNomeProduto()),
-                    String.valueOf(qtd),
-                    String.valueOf(valorU),
-                    String.valueOf(qtd * valorU)
-                };
-                modelo.addRow(linhadaTabela); // adiciona uma linha na tabela
+            PedidoDao dao = new PedidoDao();
+            List<Pedido> pedidosMesa = dao.buscarPedidoPorMesa(numeroMesa);
 
+            if (!pedidosMesa.isEmpty()) {
+                Pedido pedido = pedidosMesa.get(0);
+                pedido.setStatus(0); // Fechar mesa
+                dao.atualizar(pedido);
+
+                // Atualiza a cor da mesa para verde
+                JPanel mesaPanel = getMesaPanel(numeroMesa);
+                mesaPanel.setBackground(Color.GREEN);
+                
+
+                JOptionPane.showMessageDialog(this, "Mesa finalizada com sucesso!");
+            } else {
+                JOptionPane.showMessageDialog(this, "Nenhum pedido encontrado para esta mesa.");
             }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Erro ao pesquisar: " + e.getMessage());
-
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Erro ao finalizar a mesa: " + ex.getMessage());
         }
-    }
-    
+    }//GEN-LAST:event_btnFinalizarMesaActionPerformed
+
+    private void tabbedPanelStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_tabbedPanelStateChanged
+        int abaSelecionada = tabbedPanel.getSelectedIndex(); //Pega a aba selecionada
+        if (abaSelecionada == 0) { //Mesas
+            //Atualizar o valor total e colorir a mesa
+        }
+    }//GEN-LAST:event_tabbedPanelStateChanged
+
+
     /**
      * @param args the command line arguments
      */
@@ -1018,16 +1039,197 @@ public class TelaRestaurante extends javax.swing.JFrame {
         tfValorTNovoP.setText(total.toString());
     }
 
+    private void atualizaTabelaPedidoMesa(Integer pedidoId) {
+        DefaultTableModel modelo = (DefaultTableModel) tblPedidos.getModel();
+        modelo.setNumRows(0); // limpa os campos
+
+        try {
+            ItensPedidoDao daoIP = new ItensPedidoDao();
+            ProdutoDao daoP = new ProdutoDao();
+            PedidoDao daoPedido = new PedidoDao();
+
+            List<ItensPedido> lista = daoIP.buscar(pedidoId);
+            double valorTotalMesa = 0.0;
+
+            for (ItensPedido produtoDaMesa : lista) {
+                int qtd = produtoDaMesa.getQuantidade();
+                double valorU = daoP.getProduto(produtoDaMesa.getProduto().getId()).getValor();
+                double valorTotalItem = qtd * valorU;
+                valorTotalMesa += valorTotalItem;
+
+                String[] linhadaTabela = {
+                    String.valueOf(produtoDaMesa.getProduto().getNomeProduto()),
+                    String.valueOf(qtd),
+                    String.valueOf(valorU),
+                    String.valueOf(valorTotalItem)
+                };
+                modelo.addRow(linhadaTabela); // adiciona uma linha na tabela
+            }
+
+            // Atualiza o valor total da mesa
+            tfValorT.setText(String.format("%.2f", valorTotalMesa));
+
+            // Define a cor da mesa com base no status
+            Pedido pedido = daoPedido.getPedido(pedidoId);
+            if (pedido != null) {
+                JPanel mesaPanel = getMesaPanel(pedido.getMesa());
+                mesaDestaque = pedido.getMesa();
+                if (pedido.getStatus() == 1) { // Mesa em aberto
+                    mesaPanel.setBackground(Color.RED);
+                    switch (pedido.getMesa()) {
+                        case 1:
+                            lblValorT1.setText("R$ " + tfValorT.getText());
+                            break;
+                        case 2:
+                            lblValorT2.setText("R$ " + tfValorT.getText());
+                            break;
+                        case 3:
+                            lblValorT3.setText("R$ " + tfValorT.getText());
+                            break;
+                        case 4:
+                            lblValorT4.setText("R$ " + tfValorT.getText());
+                            break;
+                        case 5:
+                            lblValorT5.setText("R$ " + tfValorT.getText());
+                            break;
+                        case 6:
+                            lblValorT6.setText("R$ " + tfValorT.getText());
+                            break;
+                        default:
+                            throw new AssertionError();
+                    }
+                    
+                } else { // Mesa livre
+                    mesaPanel.setBackground(Color.GREEN);
+                    limparTabelaMesaPedido();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Erro ao pesquisar: " + e.getMessage());
+        }
+    }
+
+    // Método auxiliar para obter o painel da mesa com base no número
+    private JPanel getMesaPanel(int numeroMesa) {
+        switch (numeroMesa) {
+            case 1:
+                return pMesa1;
+            case 2:
+                return pMesa2;
+            case 3:
+                return pMesa3;
+            case 4:
+                return pMesa4;
+            case 5:
+                return pMesa5;
+            case 6:
+                return pMesa6;
+            default:
+                return null;
+        }
+    }
+
+    private void adicionarListenersMesas() {
+        pMesa1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                atualizaTabelaPedidoMesa(1); // Supondo que o ID do pedido seja o mesmo que o número da mesa
+                mesaDestaque = 1;
+            }
+        });
+        pMesa2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                atualizaTabelaPedidoMesa(2);
+                mesaDestaque = 2;
+            }
+        });
+        pMesa3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                atualizaTabelaPedidoMesa(3);
+                mesaDestaque = 3;
+            }
+        });
+        pMesa4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                atualizaTabelaPedidoMesa(4);
+                mesaDestaque = 4;
+            }
+        });
+        pMesa5.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                atualizaTabelaPedidoMesa(5);
+                mesaDestaque = 5;
+            }
+        });
+        pMesa6.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                atualizaTabelaPedidoMesa(6);
+                mesaDestaque = 6;
+            }
+        });
+    }
+
+    
+    
+    private void btnEmitirCupomActionPerformed() {
+        int linhaSelecionada = tblPedidos.getSelectedRow();
+        if (linhaSelecionada != -1) {
+            StringBuilder cupom = new StringBuilder();
+            cupom.append("=== Cupom Fiscal ===\n");
+            cupom.append("Mesa: ").append(cbMesa.getSelectedItem()).append("\n");
+            cupom.append("Itens Consumidos:\n");
+
+            double valorTotal = 0.0;
+            for (int i = 0; i < tblPedidos.getRowCount(); i++) {
+                String produto = tblPedidos.getValueAt(i, 0).toString();
+                String quantidade = tblPedidos.getValueAt(i, 1).toString();
+                String valorUnitario = tblPedidos.getValueAt(i, 2).toString();
+                String valorItem = tblPedidos.getValueAt(i, 3).toString();
+                cupom.append(produto).append(" - ").append(quantidade).append(" x ").append(valorUnitario)
+                     .append(" = ").append(valorItem).append("\n");
+                valorTotal += Double.parseDouble(valorItem);
+            }
+            cupom.append("Total: R$ ").append(String.format("%.2f", valorTotal)).append("\n");
+            cupom.append("===================");
+
+            JOptionPane.showMessageDialog(this, cupom.toString(), "Cupom Fiscal", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, "Selecione uma mesa para emitir o cupom.");
+        }
+    }
+    
+    private void configurarBotoes() {
+        // Botão para emitir cupom fiscal
+        btnEmitirCupom = new javax.swing.JButton("Emitir Cupom");
+        btnEmitirCupom.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEmitirCupomActionPerformed(evt);
+            }
+        });
+
+        // Botão para finalizar mesa
+        btnFinalizarMesa = new javax.swing.JButton("Finalizar Mesa");
+        btnFinalizarMesa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFinalizarMesaActionPerformed(evt);
+            }
+        });
+
+        // Adiciona os botões ao painel de pedidos da mesa
+        pPedidosMesa.add(btnEmitirCupom);
+        pPedidosMesa.add(btnFinalizarMesa);
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdicionar;
+    private javax.swing.JButton btnEmitirCupom;
+    private javax.swing.JButton btnFinalizarMesa;
     private javax.swing.JButton btnRemover;
     private javax.swing.JButton btnSair;
     private javax.swing.JButton btnSalvarPedido;
     private javax.swing.JButton btnTelaProduto;
     private javax.swing.JComboBox<String> cbMesa;
-    private javax.swing.JLabel lblAdicionar;
     private javax.swing.JLabel lblData;
-    private javax.swing.JLabel lblEditar;
     private javax.swing.JLabel lblHora;
     private javax.swing.JLabel lblIP;
     private javax.swing.JLabel lblIcon;
@@ -1050,7 +1252,6 @@ public class TelaRestaurante extends javax.swing.JFrame {
     private javax.swing.JLabel lblPrincipal;
     private javax.swing.JLabel lblProdutos;
     private javax.swing.JLabel lblQuantidade;
-    private javax.swing.JLabel lblRemover;
     private javax.swing.JLabel lblTerminal;
     private javax.swing.JLabel lblValorT;
     private javax.swing.JLabel lblValorT1;
